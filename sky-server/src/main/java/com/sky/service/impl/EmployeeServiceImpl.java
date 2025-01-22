@@ -15,7 +15,9 @@ import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
+import com.sky.result.Result;
 import com.sky.service.EmployeeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,11 +26,24 @@ import org.springframework.util.DigestUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeMapper employeeMapper;
+
+    /**
+     * select worker by id
+     * @param id
+     * @return
+     */
+    @Override
+    public Employee getById(Long id) {
+        Employee employee = employeeMapper.getById(id);
+        employee.setPassword("****");
+        return employee;
+    }
 
     /**
      * 员工登录
@@ -52,6 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //密码比对
         password = DigestUtils.md5DigestAsHex(password.getBytes());
+        log.info("password:{}", password);
         if (!password.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
@@ -108,6 +124,38 @@ public class EmployeeServiceImpl implements EmployeeService {
         long total = page.getTotal();
         List<Employee> records = page.getResult();
         return new PageResult(total,  records);
+    }
+
+    /**
+     * star or close
+     * @param status
+     * @param id
+     */
+    @Override
+    public void StartOrClose(Integer status, Long id) {
+
+        Employee employee = Employee.builder()
+                        .status(status)
+                        .id(id)
+                        .build();
+        employeeMapper.Update(employee);
+    }
+
+    /**
+     * update worker info
+     * @param employDTO
+     * @return
+     */
+    @Override
+    public EmployeeDTO update(EmployeeDTO employDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employDTO, employee);
+
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        employeeMapper.Update(employee);
+        return employDTO;
     }
 
 

@@ -11,6 +11,14 @@ import org.apache.ibatis.annotations.Select;
 public interface EmployeeMapper {
 
     /**
+     * select worker by id
+     * @param id
+     * @return
+     */
+    @Select("select * from employee where id = #{id}")
+    Employee getById(Long id);
+
+    /**
      * 根据用户名查询员工
      * @param username
      * @return
@@ -33,6 +41,12 @@ public interface EmployeeMapper {
      * @return
      */
     Page<Employee> PageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    /**
+     * start or close
+     * @param employee
+     */
+    void Update(Employee employee);
 }
 
 

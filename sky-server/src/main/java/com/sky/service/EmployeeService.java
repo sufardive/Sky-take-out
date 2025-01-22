@@ -7,6 +7,13 @@ import com.sky.entity.Employee;
 import com.sky.result.PageResult;
 
 public interface EmployeeService {
+    /**
+     * select worker in id
+     * @param id
+     * @return
+     */
+    Employee getById(Long id) ;
+
 
     /**
      * 员工登录
@@ -31,4 +38,18 @@ public interface EmployeeService {
      * @return
      */
     PageResult PageQuery(EmployeePageQueryDTO EmployeePageQueryDTO);
+
+    /**
+     * start or close
+     * @param status
+     * @param id
+     */
+    void StartOrClose(Integer status, Long id);
+
+    /**
+     * update worker info
+     * @param employDTO
+     * @return
+     */
+    EmployeeDTO update(EmployeeDTO employDTO);
 }

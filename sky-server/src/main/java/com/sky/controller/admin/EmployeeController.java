@@ -32,6 +32,9 @@ public class EmployeeController {
     @Autowired
     private JwtProperties jwtProperties;
 
+
+
+
     /**
      * 登录
      *
@@ -63,6 +66,11 @@ public class EmployeeController {
     }
 //TODO 1.此处返回的应该是DTO，而且返回是空置
 
+    /**
+     * work add
+     * @param employeeDTO
+     * @return
+     */
     @PostMapping
     @ApiOperation("add work")
     public Result<String> save(@RequestBody EmployeeDTO employeeDTO) {
@@ -83,6 +91,11 @@ public class EmployeeController {
         return Result.success();
     }
 
+    /**
+     * worker page
+     * @param employeePageQueryDTO
+     * @return
+     */
     @GetMapping("/page")
     @ApiOperation("page query")
     public Result<PageResult> Page(EmployeePageQueryDTO employeePageQueryDTO){
@@ -90,4 +103,47 @@ public class EmployeeController {
         PageResult pageResult= employeeService.PageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
     }
+
+    /**
+     * Start or Close
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("Start Or Close works account")
+//    这里直接点击执行service就完了
+    public Result StartOrClose(@PathVariable Integer status, Long id){
+        log.info("forbid works:{},{}", status, id);
+        employeeService.StartOrClose(status,id);
+        return Result.success();
+    }
+
+    /**
+     * select worker by id
+     * @param id
+     * @return
+     */
+    @GetMapping("{id}")
+    @ApiOperation("select worker in id")
+    public Result<Employee> getById(@PathVariable Long id){
+        log.info("getById:{}", id);
+        Employee employee = employeeService.getById(id);
+        return Result.success(employee);
+    }
+
+    /**
+     * update worker ifo
+     * @param employDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("update worker ifo")
+    public Result Update(@RequestBody EmployeeDTO employDTO){
+        log.info("update worker:{}", employDTO);
+        //直接传方法，无需发返回值
+        employeeService.update(employDTO);
+        return Result.success();
+    }
 }
+
