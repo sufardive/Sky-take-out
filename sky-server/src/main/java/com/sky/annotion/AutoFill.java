@@ -1,6 +1,7 @@
 package com.sky.annotion;
 
 import com.sky.enumeration.OperationType;
+import net.sf.jsqlparser.statement.update.Update;
 import org.springframework.data.annotation.QueryAnnotation;
 
 import java.lang.annotation.ElementType;
@@ -13,3 +14,4 @@ import java.lang.annotation.Target;
 public @interface AutoFill {
     OperationType value();
 }
+

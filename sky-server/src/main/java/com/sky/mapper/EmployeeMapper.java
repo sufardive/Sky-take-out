@@ -49,6 +49,7 @@ public interface EmployeeMapper {
      * start or close
      * @param employee
      */
+    @AutoFill(value = OperationType.UPDATE)
     void Update(Employee employee);
 }
 

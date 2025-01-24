@@ -11,16 +11,15 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Aspect
 @Component
 @Slf4j
 public class AutoFillAspect {
-    @Pointcut("execution(* com.sky.mapper.*.*(..))")
+    @Pointcut("execution(* com.sky.mapper.*.*(..)) && @annotation(com.sky.annotion.AutoFill)")
 //    you just tool,dont need have (why)
     public void autoFillpointCut() {}
 //    class only exis one
@@ -44,14 +43,14 @@ public class AutoFillAspect {
 //        3. 用object收东西
         Object entity = args[0];
 //        3. 准备赋值的数据
-        LocalTime now = LocalTime.now();
+        LocalDateTime now = LocalDateTime.now();
         Long currentid = BaseContext.getCurrentId();
 //        4. 根据当前 不同的操作类型为对应的属性通过反射赋值
         if (operationType == OperationType.INSERT) {
             try {
 //                make method by myself
-                Method setCreateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_TIME,LocalTime.class);
-                Method setUpdateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME,LocalTime.class);
+                Method setCreateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_TIME, LocalDateTime.class);
+                Method setUpdateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME,LocalDateTime.class);
                 Method setCreateUser = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_USER,Long.class);
                 Method setUpdateUser = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER,Long.class);
 
@@ -64,7 +63,7 @@ public class AutoFillAspect {
         } else if (operationType == OperationType.UPDATE) {
             try {
 
-            Method setUpdateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME,LocalTime.class);
+            Method setUpdateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME,LocalDateTime.class);
             Method setUpdateUser = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER,Long.class);
 
             setUpdateTime.invoke(entity,now);
